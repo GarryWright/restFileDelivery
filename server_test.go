@@ -1,0 +1,300 @@
+package main_test
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	. "github.com/GarryWright/restFileDelivery/fileDelivery"
+	"github.com/go-martini/martini"
+	"github.com/modocache/gory"
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
+	"net/http"
+	"net/http/httptest"
+)
+
+/*
+Convert JSON data into a slice.
+*/
+func sliceFromJSON(data []byte) []interface{} {
+	var result interface{}
+	json.Unmarshal(data, &result)
+	return result.([]interface{})
+}
+
+/*
+Convert JSON data into a map.
+*/
+func mapFromJSON(data []byte) map[string]interface{} {
+	var result interface{}
+	json.Unmarshal(data, &result)
+	return result.(map[string]interface{})
+}
+
+/*
+Server unit tests.
+*/
+var _ = Describe("Server", func() {
+	var dbName string
+	var session *DatabaseSession
+	var server *martini.ClassicMartini
+	var request *http.Request
+	var recorder *httptest.ResponseRecorder
+
+	BeforeEach(func() {
+		// Set up a new server, connected to a test database,
+		// before each test.
+		dbName = "requestedFiles"
+		session = NewSession(dbName)
+		server = NewServer(session)
+
+		// Record HTTP responses.
+		recorder = httptest.NewRecorder()
+	})
+
+	AfterEach(func() {
+		// Clear the database after each test.
+		session.DB(dbName).DropDatabase()
+	})
+
+	Describe("GET /files", func() {
+
+		// Set up a new GET request before every test
+		// in this describe block.
+		BeforeEach(func() {
+			request, _ = http.NewRequest("GET", "/requestedFiles", nil)
+		})
+
+		Context("when no requestedFiles exist", func() {
+			It("returns a status code of 200", func() {
+				server.ServeHTTP(recorder, request)
+				Expect(recorder.Code).To(Equal(200))
+			})
+
+			It("returns a empty body", func() {
+				server.ServeHTTP(recorder, request)
+				Expect(recorder.Body.String()).To(Equal("[]"))
+			})
+		})
+
+		Context("when requestedFiles exist", func() {
+
+			// Insert two valid requestedFiles into the database
+			// before each test in this context.
+			BeforeEach(func() {
+				collection := session.DB(dbName).C("requestedFiles")
+				collection.Insert(gory.Build("requestedFile"))
+				collection.Insert(gory.Build("requestedFile"))
+
+			})
+
+			It("returns a status code of 200", func() {
+				server.ServeHTTP(recorder, request)
+				Expect(recorder.Code).To(Equal(200))
+			})
+
+			It("returns those requestedFiles in the body", func() {
+				server.ServeHTTP(recorder, request)
+				peopleJSON := sliceFromJSON(recorder.Body.Bytes())
+				fmt.Println(recorder)
+				Expect(len(peopleJSON)).To(Equal(2))
+
+				personJSON := peopleJSON[0].(map[string]interface{})
+				Expect(personJSON["clientid"]).To(Equal("HSBC"))
+				Expect(personJSON["requestid"]).ShouldNot(Equal("A"))
+				Expect(personJSON["ricdays"]).To(Equal(float64(27)))
+				Expect(personJSON["fileurl"]).To(Equal("https://s3-us-west-2.amazonaws.com/garrysbucket/rics.txt"))
+
+			})
+		})
+	})
+
+	Describe("POST /files", func() {
+
+		Context("with invalid JSON", func() {
+
+			// Create a POST request using JSON from our invalid
+			// factory object before each test in this context.
+			BeforeEach(func() {
+				body, _ := json.Marshal(
+					gory.Build("requestedFileNoRequest"))
+				request, _ = http.NewRequest(
+					"POST", "/files", bytes.NewReader(body))
+			})
+
+			It("returns a status code of 400", func() {
+				server.ServeHTTP(recorder, request)
+				Expect(recorder.Code).To(Equal(400))
+			})
+		})
+
+		Context("with valid JSON", func() {
+
+			// Create a POST request with valid JSON from
+			// our factory before each test in this context.
+			BeforeEach(func() {
+				body, _ := json.Marshal(
+					gory.Build("requestedFile"))
+				request, _ = http.NewRequest(
+					"POST", "/files", bytes.NewReader(body))
+			})
+
+			It("returns a status code of 201", func() {
+				server.ServeHTTP(recorder, request)
+				Expect(recorder.Code).To(Equal(201))
+			})
+
+			It("returns the inserted requestedfile", func() {
+				server.ServeHTTP(recorder, request)
+
+				personJSON := mapFromJSON(recorder.Body.Bytes())
+				Expect(personJSON["clientid"]).To(Equal("HSBC"))
+				Expect(personJSON["requestid"]).ShouldNot(Equal("A"))
+				Expect(personJSON["ricdays"]).To(Equal(float64(27)))
+				Expect(personJSON["fileurl"]).To(Equal("https://s3-us-west-2.amazonaws.com/garrysbucket/rics.txt"))
+			})
+		})
+
+		Context("with JSON containing a duplicate request", func() {
+			BeforeEach(func() {
+				requestedFile := gory.Build("requestedFile")
+				session.DB(dbName).C("requestedFiles").Insert(requestedFile)
+
+				body, _ := json.Marshal(requestedFile)
+				request, _ = http.NewRequest(
+					"POST", "/files", bytes.NewReader(body))
+			})
+
+			It("returns a status code of 400", func() {
+				server.ServeHTTP(recorder, request)
+				Expect(recorder.Code).To(Equal(400))
+			})
+		})
+	})
+
+	Describe("POST /files", func() {
+
+		Context("with invalid JSON", func() {
+
+			// Create a POST request using JSON from our invalid
+			// factory object before each test in this context.
+			BeforeEach(func() {
+				body, _ := json.Marshal(
+					gory.Build("requestedFileNoRequest"))
+				request, _ = http.NewRequest(
+					"POST", "/files", bytes.NewReader(body))
+			})
+
+			It("returns a status code of 400", func() {
+				server.ServeHTTP(recorder, request)
+				Expect(recorder.Code).To(Equal(400))
+			})
+		})
+
+		Context("with valid JSON", func() {
+
+			// Create a POST request with valid JSON from
+			// our factory before each test in this context.
+			BeforeEach(func() {
+				body, _ := json.Marshal(
+					gory.Build("requestedFile"))
+				request, _ = http.NewRequest(
+					"POST", "/files", bytes.NewReader(body))
+			})
+
+			It("returns a status code of 201", func() {
+				server.ServeHTTP(recorder, request)
+				Expect(recorder.Code).To(Equal(201))
+			})
+
+			It("returns the inserted requestedfile", func() {
+				server.ServeHTTP(recorder, request)
+
+				personJSON := mapFromJSON(recorder.Body.Bytes())
+				Expect(personJSON["clientid"]).To(Equal("HSBC"))
+				Expect(personJSON["requestid"]).ShouldNot(Equal("A"))
+				Expect(personJSON["ricdays"]).To(Equal(float64(27)))
+				Expect(personJSON["fileurl"]).To(Equal("https://s3-us-west-2.amazonaws.com/garrysbucket/rics.txt"))
+			})
+		})
+
+		Context("with JSON containing a duplicate request", func() {
+			BeforeEach(func() {
+				requestedFile := gory.Build("requestedFile")
+				session.DB(dbName).C("requestedFiles").Insert(requestedFile)
+
+				body, _ := json.Marshal(requestedFile)
+				request, _ = http.NewRequest(
+					"POST", "/files", bytes.NewReader(body))
+			})
+
+			It("returns a status code of 400", func() {
+				server.ServeHTTP(recorder, request)
+				Expect(recorder.Code).To(Equal(400))
+			})
+		})
+	})
+
+	Describe("GET /file?req=0", func() {
+
+		Context("with valid token", func() {
+
+			BeforeEach(func() {
+				collection := session.DB(dbName).C("requestedFiles")
+				collection.Insert(gory.Build("requestedFile0"))
+				request, _ = http.NewRequest("GET", "/file?req=0", nil)
+
+			})
+
+			Context("when a requestedFiles exists with request id 0", func() {
+				It("returns a status code of 200", func() {
+					server.ServeHTTP(recorder, request)
+					Expect(recorder.Code).To(Equal(200))
+				})
+
+				It("returns a the s3 file contents body", func() {
+					server.ServeHTTP(recorder, request)
+					Expect(recorder.Body.String()[:21]).To(Equal("IBM.N 1/1/1960 12.375"))
+				})
+			})
+
+		})
+		Context("with invalid token", func() {
+
+			BeforeEach(func() {
+				collection := session.DB(dbName).C("requestedFiles")
+				collection.Insert(gory.Build("requestedFile1"))
+				request, _ = http.NewRequest("GET", "/file?req=0", nil)
+
+			})
+
+			Context("when a requestedFiles does not exists with request id 0", func() {
+				It("returns a status code of 401", func() {
+					server.ServeHTTP(recorder, request)
+					Expect(recorder.Code).To(Equal(401))
+				})
+
+			})
+
+		})
+		Context("with valid token and a bad file url", func() {
+
+			BeforeEach(func() {
+				collection := session.DB(dbName).C("requestedFiles")
+				collection.Insert(gory.Build("requestedFile1"))
+				request, _ = http.NewRequest("GET", "/file?req=1", nil)
+
+			})
+
+			Context("when a s3 file does not exits", func() {
+				It("returns a status code of 402", func() {
+					server.ServeHTTP(recorder, request)
+					Expect(recorder.Code).To(Equal(402))
+				})
+
+			})
+
+		})
+
+	})
+})
