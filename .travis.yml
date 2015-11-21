@@ -3,4 +3,4 @@ notificaitons:
   email:
     recipients: garry.wright@me.com
     on_success: change
-    on_failure: always
+    on_failure: always  
