@@ -3,7 +3,7 @@ services: mongodb
 before_install:
   - go get golang.org/x/tools/cmd/cover
 script:
-  - ginkgo -r --randomizeAllSpecs -cover
+  - $GOPATH/bin/ginkgo -r --randomizeAllSpecs -cover
 notificaitons:
   email:
     recipients: garry.wright@me.com
