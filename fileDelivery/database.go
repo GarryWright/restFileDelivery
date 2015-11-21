@@ -18,8 +18,8 @@ type DatabaseSession struct {
 Connect to the local MongoDB and set up the database.
 */
 func NewSession(name string) *DatabaseSession {
-	// session, err := mgo.Dial("mongodb://root:root@ds057224.mongolab.com:57224/requestfiles")
-	session, err := mgo.Dial("mongodb://localhost:27017/requestfiles")
+	session, err := mgo.Dial("mongodb://root:root@ds057224.mongolab.com:57224/requestfiles")
+	//session, err := mgo.Dial("mongodb://localhost:27017/requestfiles")
 	if err != nil {
 		panic(err)
 	}
