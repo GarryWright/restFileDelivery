@@ -1,8 +1,12 @@
 language: go
+services: mongodb
+before_install:
+  - go get golang.org/x/tools/cmd/cover
+script:
+  - ginkgo -r --randomizeAllSpecs -cover
 notificaitons:
   email:
     recipients: garry.wright@me.com
     on_success: change
     on_failure: always
- services:
-  - mongodb
+ 
