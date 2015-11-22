@@ -8,3 +8,5 @@ GoLang S3 File API
 
 Add a document to the DB
 curl -i -X POST -H "Content-Type: application/json" -d '{"clientid": "HSBC", "requestid": "00003", "ricdays": 21, "fileurl": "http://s3-us-west-2.amazonaws.com/garrysbucket/rics2.txt"}' localhost:3000/files
+
+http://loacalhost:300/requestedFiles :- returns all documents
