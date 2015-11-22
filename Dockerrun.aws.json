@@ -1,5 +1,9 @@
 {
   "AWSEBDockerrunVersion": "2",
+  "Image": {
+    "Name": "garrywright/restfiledelivery:%BUILD_NUM%",
+    "Update": "true"
+  },
   "Ports": [
     {
       "ContainerPort": "3000"
