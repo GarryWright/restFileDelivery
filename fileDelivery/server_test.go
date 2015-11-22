@@ -105,7 +105,7 @@ var _ = Describe("Server", func() {
 				Expect(personJSON["clientid"]).To(Equal("HSBC"))
 				Expect(personJSON["requestid"]).ShouldNot(Equal("A"))
 				Expect(personJSON["ricdays"]).To(Equal(float64(27)))
-				Expect(personJSON["fileurl"]).To(Equal("https://s3-us-west-2.amazonaws.com/garrysbucket/rics.txt"))
+				Expect(personJSON["fileurl"]).To(Equal("http://s3-us-west-2.amazonaws.com/garrysbucket/rics.txt"))
 
 			})
 		})
@@ -153,7 +153,7 @@ var _ = Describe("Server", func() {
 				Expect(personJSON["clientid"]).To(Equal("HSBC"))
 				Expect(personJSON["requestid"]).To(Equal("0"))
 				Expect(personJSON["ricdays"]).To(Equal(float64(27)))
-				Expect(personJSON["fileurl"]).To(Equal("https://s3-us-west-2.amazonaws.com/garrysbucket/rics.txt"))
+				Expect(personJSON["fileurl"]).To(Equal("http://s3-us-west-2.amazonaws.com/garrysbucket/rics.txt"))
 			})
 		})
 
@@ -216,7 +216,7 @@ var _ = Describe("Server", func() {
 				Expect(personJSON["clientid"]).To(Equal("HSBC"))
 				Expect(personJSON["requestid"]).ShouldNot(Equal("A"))
 				Expect(personJSON["ricdays"]).To(Equal(float64(27)))
-				Expect(personJSON["fileurl"]).To(Equal("https://s3-us-west-2.amazonaws.com/garrysbucket/rics.txt"))
+				Expect(personJSON["fileurl"]).To(Equal("http://s3-us-west-2.amazonaws.com/garrysbucket/rics.txt"))
 			})
 		})
 

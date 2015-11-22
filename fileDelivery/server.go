@@ -2,13 +2,16 @@ package fileDelivery
 
 import (
 	"github.com/go-martini/martini"
-	"github.com/kr/s3/s3util"
+	// "github.com/kr/s3/s3util"
+	"bytes"
 	"github.com/martini-contrib/binding"
 	"github.com/martini-contrib/render"
 	"gopkg.in/mgo.v2"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
+	"strings"
 )
 
 /*
@@ -66,16 +69,23 @@ func NewServer(msession *DatabaseSession) *martini.ClassicMartini {
 		// s3Key := os.Getenv("S3KEY")
 		// s3SecretKey := os.Getenv("S3SECRET")
 
-		result, err := s3util.Open(url, nil)
+		response, err := http.Get(url)
 
-		if err != nil {
+		defer response.Body.Close()
+		contents, err := ioutil.ReadAll(response.Body)
+
+		if err != nil || strings.Contains(string(contents[:]), ">The specified key does not exist.<") {
 			r.JSON(402, map[string]string{
 				"error": "Failed to get object",
 			})
 		}
+		rr := bytes.NewReader(contents)
+
+		// result, err := s3util.Open(url, nil)
+
 		if destinationFile == "" {
 			// Copy the s3 file contents to the http response writer]
-			if _, err := io.Copy(w, result); err != nil {
+			if _, err := io.Copy(w, rr); err != nil {
 				r.JSON(403, map[string]string{
 					"error": "Failed to download object",
 				})
@@ -87,7 +97,7 @@ func NewServer(msession *DatabaseSession) *martini.ClassicMartini {
 					"File error": err,
 				})
 			} else {
-				if _, err := io.Copy(filewriter, result); err != nil {
+				if _, err := io.Copy(filewriter, rr); err != nil {
 					r.JSON(405, map[string]string{
 						"error": "Failed to download to file",
 					})
@@ -96,7 +106,7 @@ func NewServer(msession *DatabaseSession) *martini.ClassicMartini {
 
 			filewriter.Close()
 		}
-		result.Close()
+		//result.Close()
 	})
 
 	// Define the "POST /files" route. i.e pst requestFile documents

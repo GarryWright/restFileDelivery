@@ -25,14 +25,14 @@ func defineFactories() {
 					return fmt.Sprintf("%d", n)
 				})
 			factory["RicDays"] = 27
-			factory["FileURL"] = "https://s3-us-west-2.amazonaws.com/garrysbucket/rics.txt"
+			factory["FileURL"] = "http://s3-us-west-2.amazonaws.com/garrysbucket/rics.txt"
 		})
 
 	gory.Define("requestedFileNoRequest", RequestedFile{},
 		func(factory gory.Factory) {
 			factory["ClientId"] = "HSBC"
 			factory["RicDays"] = 27
-			factory["FileURL"] = "https://s3-us-west-2.amazonaws.com/garrysbucket/rics.txt"
+			factory["FileURL"] = "http://s3-us-west-2.amazonaws.com/garrysbucket/rics.txt"
 		})
 
 	gory.Define("requestedFile0", RequestedFile{},
@@ -40,13 +40,13 @@ func defineFactories() {
 			factory["ClientId"] = "HSBC"
 			factory["RicDays"] = 27
 			factory["RequestId"] = "0"
-			factory["FileURL"] = "https://s3-us-west-2.amazonaws.com/garrysbucket/rics.txt"
+			factory["FileURL"] = "http://s3-us-west-2.amazonaws.com/garrysbucket/rics.txt"
 		})
 	gory.Define("requestedFile1", RequestedFile{},
 		func(factory gory.Factory) {
 			factory["ClientId"] = "HSBC"
 			factory["RicDays"] = 27
 			factory["RequestId"] = "1"
-			factory["FileURL"] = "https://s3-us-west-2.amazonaws.com/garrysbucket/reeeecs.txt"
+			factory["FileURL"] = "http://s3-us-west-2.amazonaws.com/garrysbucket/reeeecs.txt"
 		})
 }
