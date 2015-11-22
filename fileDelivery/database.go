@@ -3,6 +3,7 @@ package fileDelivery
 import (
 	"github.com/go-martini/martini"
 	"gopkg.in/mgo.v2"
+	"os"
 )
 
 /*
@@ -18,8 +19,14 @@ type DatabaseSession struct {
 Connect to the local MongoDB and set up the database.
 */
 func NewSession(name string) *DatabaseSession {
+	db_server_seed := os.Getenv("DATABASE_PORT_27017_TCP_ADDR")
+
+	if db_server_seed == "" {
+		db_server_seed = "mongodb://127.0.0.1:27017"
+	}
+
 	// session, err := mgo.Dial("mongodb://root:root@ds057224.mongolab.com:57224/requestfiles")
-	session, err := mgo.Dial("mongodb://127.0.0.1:27017/requestfiles")
+	session, err := mgo.Dial(db_server_seed)
 	if err != nil {
 		panic(err)
 	}

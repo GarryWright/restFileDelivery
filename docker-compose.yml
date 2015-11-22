@@ -1,0 +1,14 @@
+api:  
+  build: .
+  ports: 
+    - 3000:3000
+  volumes:
+    - ./restfiledelivery:/work/src/github.com/GarryWright/restfiledelivery
+  links:
+    - database
+  environment:
+    - DB_NAME=requestfiles
+
+database:  
+  image: mongo:3.0.7
+  command: mongod --smallfiles --quiet --logpath=/dev/null
