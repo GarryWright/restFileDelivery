@@ -63,8 +63,8 @@ func NewServer(msession *DatabaseSession) *martini.ClassicMartini {
 		}
 		url := requestedFile.FileURL
 		// url := "https://s3-us-west-2.amazonaws.com/garrysbucket/rics.txt"
-		s3Key := os.Getenv("S3KEY")
-		s3SecretKey := os.Getenv("S3SECRET")
+		// s3Key := os.Getenv("S3KEY")
+		// s3SecretKey := os.Getenv("S3SECRET")
 
 		result, err := s3util.Open(url, nil)
 
