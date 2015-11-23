@@ -1,12 +1,12 @@
 package fileDelivery_test
 
 import (
-	. "github.com/GarryWright/restfiledelivery/Godeps/_workspace/src/github.com/GarryWright/restFileDelivery/fileDelivery"
-	. "github.com/GarryWright/restfiledelivery/Godeps/_workspace/src/github.com/onsi/ginkgo"
-	. "github.com/GarryWright/restfiledelivery/Godeps/_workspace/src/github.com/onsi/gomega"
+	. "github.com/GarryWright/restFileDelivery/fileDelivery"
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 
 	"fmt"
-	"github.com/GarryWright/restfiledelivery/Godeps/_workspace/src/github.com/modocache/gory"
+	"github.com/modocache/gory"
 	"testing"
 )
 

@@ -1,8 +1,8 @@
 package fileDelivery
 
 import (
-	"github.com/GarryWright/restfiledelivery/Godeps/_workspace/src/gopkg.in/mgo.v2"
-	"github.com/GarryWright/restfiledelivery/Godeps/_workspace/src/gopkg.in/mgo.v2/bson"
+	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 )
 
 type RequestedFile struct {

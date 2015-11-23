@@ -1,12 +1,12 @@
 package fileDelivery
 
 import (
-	"github.com/GarryWright/restfiledelivery/Godeps/_workspace/src/github.com/go-martini/martini"
+	"github.com/go-martini/martini"
 	// "github.com/kr/s3/s3util"
 	"bytes"
-	"github.com/GarryWright/restfiledelivery/Godeps/_workspace/src/github.com/martini-contrib/binding"
-	"github.com/GarryWright/restfiledelivery/Godeps/_workspace/src/github.com/martini-contrib/render"
-	"github.com/GarryWright/restfiledelivery/Godeps/_workspace/src/gopkg.in/mgo.v2"
+	"github.com/martini-contrib/binding"
+	"github.com/martini-contrib/render"
+	"gopkg.in/mgo.v2"
 	"io"
 	"io/ioutil"
 	"net/http"

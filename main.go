@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/GarryWright/restfiledelivery/Godeps/_workspace/src/github.com/GarryWright/restFileDelivery/fileDelivery"
+	"github.com/GarryWright/restFileDelivery/fileDelivery"
 	"os"
 )
 

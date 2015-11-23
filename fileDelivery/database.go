@@ -1,8 +1,8 @@
 package fileDelivery
 
 import (
-	"github.com/GarryWright/restfiledelivery/Godeps/_workspace/src/github.com/go-martini/martini"
-	"github.com/GarryWright/restfiledelivery/Godeps/_workspace/src/gopkg.in/mgo.v2"
+	"github.com/go-martini/martini"
+	"gopkg.in/mgo.v2"
 	"os"
 )
 
