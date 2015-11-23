@@ -1,5 +1,7 @@
 language: go
 
+go:
+  - 1.4
 
 # Mongo binds to 127.0.0.1 by default
 services:
