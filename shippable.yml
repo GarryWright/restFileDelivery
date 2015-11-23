@@ -1,21 +1,35 @@
 language: go
-services: mongodb
+
+
+# Mongo binds to 127.0.0.1 by default
+services:
+  - mongodb
+
+before_install:
+  - sudo apt-get update 
+  
+# Installs tool used for code coverage report
+install:
+  - go get code.google.com/p/go.tools/cmd/cover
+
+# Make folders for the reports
 before_script:
-  - go get golang.org/x/tools/cmd/cover
-  - go install -race std
-  - go get github.com/onsi/gomega
-  - go get github.com/modocache/gory
-  - go get github.com/onsi/ginkgo/ginkgo
-  - go install github.com/onsi/ginkgo/ginkgo
-  - export PATH=$PATH:$HOME/gopath/bin
+  - mkdir -p shippable/testresults
+  - mkdir -p shippable/codecoverage
 
 script:
-  - go test -race ./...
-  - go test -cover ./...
-  - $HOME/gopath/bin/ginkgo -r --randomizeAllSpecs -cover
+  - export GOPATH=$PWD
+  - export PATH=$PATH:$GOPATH/bin
+  - sudo apt-get install bzr
+  - go get
+  - go get github.com/t-yuki/gocover-cobertura
+  - go get github.com/onsi/gomega
+  - go get github.com/onsi/ginkgo
+  - go get labix.org/v2/mgo
+  - go install github.com/OneRedOak/sample
+  - go test -coverprofile=coverage.txt -covermode count github.com/OneRedOak/sample
+  - gocover-cobertura < coverage.txt > coverage.xml
 
-notificaitons:
-  email:
-    recipients: garry.wright@me.com
-    on_success: change
-    on_failure: always
+after_script:
+  - mv $PWD/src/github.com/OneRedOak/sample/junit.xml $PWD/shippable/testresults/
+  - mv $PWD/coverage.xml $PWD/shippable/codecoverage/
