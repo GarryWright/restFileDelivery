@@ -1,8 +1,7 @@
 GoLang S3 File API
 ======================
 
-
-[![Build Status](https://travis-ci.org/GarryWright/restFileDelivery.svg?branch=master)](https://travis-ci.org/GarryWright/restFileDelivery)
+[![Build Status](https://travis-ci.org/GarryWright/restfiledelivery.svg?branch=master)](https://travis-ci.org/GarryWright/restfiledelivery)
 [![Build Status](https://drone.io/github.com/GarryWright/restFileDelivery/status.png)](https://drone.io/github.com/GarryWright/restFileDelivery/latest)
 [![Coverage Status](https://coveralls.io/repos/GarryWright/restFileDelivery/badge.svg?branch=master&service=github)](https://coveralls.io/github/GarryWright/restFileDelivery?branch=master)
 
@@ -13,7 +12,7 @@ Its uses "coverall" to montior test coverage
 and "dockerhub" to store docker containers
 and shippable to auto deploy the docker containers to aws
 
-...
+```
 Add a document to the DB
 curl -i -X POST -H "Content-Type: application/json" -d '{"clientid": "HSBC", "requestid": "00005", "ricdays": 21, "fileurl": "http://s3-us-west-2.amazonaws.com/garrysbucket/rics2.txt"}' localhost:3000/files
 
@@ -28,9 +27,9 @@ Content-Length: 138
   "requestid": "00005",
   "ricdays": 21,
   "fileurl": "http://s3-us-west-2.amazonaws.com/garrysbucket/rics2.txt"
-...
+```
 http://localhost:3000/requestedFiles :- returns all documents
-...
+```
 curl http://localhost:3000/requestedFiles
 [
   {
@@ -57,11 +56,11 @@ curl http://localhost:3000/requestedFiles
     "ricdays": 21,
     "fileurl": "http://s3-us-west-2.amazonaws.com/garrysbucket/rics2.txt"
   }
-...
+```
 
 curl http://localhost:3000/file?requestid=00002
 returns the contents of the s3 file found in the requestedFile document to the session
-...
+```
 IBM.N 1/1/1960 12.375
 IBM.N 1/2/1960 12.375
 IBM.N 1/3/1960 12.375
@@ -69,12 +68,12 @@ IBM.N 1/4/1960 12.375
 IBM.N 1/5/1960 12.375
 IBM.N 1/6/1960 12.375
 
-...
+```
 
 localhost:3000/file?requestid=00002&destination=copiedfile.txt
 returns the contents of the s3 file found in the requestedFile document to the file specified
-...
+```
 {
   "done": "https://s3-us-west-2.amazonaws.com/garrysbucket/rics.txt downloaded to xxx.txt"
 }
-...
+```
