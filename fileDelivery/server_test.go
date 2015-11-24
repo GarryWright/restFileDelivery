@@ -317,6 +317,7 @@ var _ = Describe("Server", func() {
 				})
 
 				It("returns a the s3 file contents into a file", func() {
+					os.Remove("copiedfile.txt")
 					server.ServeHTTP(recorder, request)
 					file, _ := os.Open("copiedfile.txt")
 					defer file.Close()

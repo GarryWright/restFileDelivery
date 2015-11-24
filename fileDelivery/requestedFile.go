@@ -1,8 +1,12 @@
 package fileDelivery
 
 import (
+	"bytes"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
+	"io"
+	"io/ioutil"
+	"net/http"
 )
 
 type RequestedFile struct {
@@ -33,4 +37,10 @@ func fetchRequestedFile(db *mgo.Database, requestid string) (RequestedFile, erro
 func addRequestedFile(db *mgo.Database, requestedFile RequestedFile) error {
 	err := db.C("requestedFiles").Insert(requestedFile)
 	return err
+}
+func gets3files(url string) (io.Reader, []byte, error) {
+	response, err := http.Get(url)
+	contents, err := ioutil.ReadAll(response.Body)
+	response.Body.Close()
+	return bytes.NewReader(contents), contents, err
 }
