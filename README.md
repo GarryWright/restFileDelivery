@@ -1,8 +1,10 @@
 GoLang S3 File API
 ======================
-
+Travis
 [![Build Status](https://travis-ci.org/GarryWright/restfiledelivery.svg?branch=master)](https://travis-ci.org/GarryWright/restfiledelivery)
+Drone
 [![Build Status](https://drone.io/github.com/GarryWright/restFileDelivery/status.png)](https://drone.io/github.com/GarryWright/restFileDelivery/latest)
+Coverall
 [![Coverage Status](https://coveralls.io/repos/GarryWright/restFileDelivery/badge.svg?branch=master&service=github)](https://coveralls.io/github/GarryWright/restFileDelivery?branch=master)
 
 
