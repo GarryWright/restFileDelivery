@@ -2,6 +2,11 @@ package fileDelivery
 
 import (
 	"fmt"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/binding"
 	"github.com/martini-contrib/render"
@@ -9,6 +14,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -63,21 +69,21 @@ func NewServer(msession *DatabaseSession) *martini.ClassicMartini {
 			})
 		}
 		url := requestedFile.FileURL
+		fbucket := requestedFile.FileBucket
+		fkey := requestedFile.FileKey
 		// url := "https://s3-us-west-2.amazonaws.com/garrysbucket/rics.txt"
 		// s3Key := os.Getenv("S3KEY")
 		// s3SecretKey := os.Getenv("S3SECRET")
 
-		rr, by, err := gets3files(url)
-
-		if err != nil || strings.Contains(string(by[:]), ">The specified key does not exist.<") {
-			r.JSON(402, map[string]string{
-				"error": "Failed to get object",
-			})
-		}
-
 		// result, err := s3util.Open(url, nil)
 
 		if destinationFile == "" {
+			rr, by, err := gets3files(url)
+			if err != nil || strings.Contains(string(by[:]), ">The specified key does not exist.<") {
+				r.JSON(402, map[string]string{
+					"error": "Failed to get object",
+				})
+			}
 			// Copy the s3 file contents to the http response writer]
 			if _, err := io.Copy(w, rr); err != nil {
 				r.JSON(403, map[string]string{
@@ -92,14 +98,22 @@ func NewServer(msession *DatabaseSession) *martini.ClassicMartini {
 					"File error": err,
 				})
 			} else {
-				if _, err := io.Copy(filewriter, rr); err != nil {
+				var s3sess = session.New(aws.NewConfig().WithCredentials(credentials.AnonymousCredentials).WithRegion("us-west-2"))
+				downloader := s3manager.NewDownloader(s3sess)
+				numBytes, err := downloader.Download(filewriter, &s3.GetObjectInput{
+					Bucket: &fbucket,
+					Key:    &fkey,
+				})
+				//if _, err := io.Copy(filewriter, rr); err != nil {
+				if err != nil {
+					fmt.Printf("%s\n", err)
 					r.JSON(405, map[string]string{
 						"error": "Failed to download to file",
 					})
 				} else {
-					fmt.Printf("%s\n", destinationFile+" downloaded")
+
 					r.JSON(200, map[string]string{
-						"done": url + " downloaded to " + destinationFile,
+						"done": url + " downloaded to " + destinationFile + " [" + strconv.FormatInt(numBytes, 10) + "]",
 					})
 				}
 			}
