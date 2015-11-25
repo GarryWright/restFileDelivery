@@ -57,4 +57,20 @@ func defineFactories() {
 			factory["FileBucket"] = "garrysbucket"
 			factory["FileKey"] = "reeeecs.txt"
 		})
+	gory.Define("requestedFile2", RequestedFile{},
+		func(factory gory.Factory) {
+			factory["ClientId"] = "HSBC"
+			factory["RicDays"] = 27
+			factory["RequestId"] = "1"
+			factory["FileURL"] = "http://s3-us-west-2.amazonaws.com/garrysbucket/reeeecs.txt"
+			factory["FileKey"] = "reeeecs.txt"
+		})
+	gory.Define("requestedFile3", RequestedFile{},
+		func(factory gory.Factory) {
+			factory["ClientId"] = "HSBC"
+			factory["RicDays"] = 27
+			factory["RequestId"] = "1"
+			factory["FileURL"] = "http://s3-us-west-2.amazonaws.com/garrysbucket/reeeecs.txt"
+			factory["FileBucket"] = "garrysbucket"
+		})
 }

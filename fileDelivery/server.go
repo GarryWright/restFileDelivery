@@ -1,7 +1,6 @@
 package fileDelivery
 
 import (
-	"fmt"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -11,11 +10,9 @@ import (
 	"github.com/martini-contrib/binding"
 	"github.com/martini-contrib/render"
 	"gopkg.in/mgo.v2"
-	"io"
 	"net/http"
 	"os"
 	"strconv"
-	"strings"
 )
 
 /*
@@ -60,61 +57,50 @@ func NewServer(msession *DatabaseSession) *martini.ClassicMartini {
 		}
 		requestid := t.URL.Query().Get("requestid")
 		destinationFile := t.URL.Query().Get("destination")
-
-		requestedFile, err := fetchRequestedFile(db, requestid)
-
-		if err != nil {
-			r.JSON(401, map[string]string{
-				" DB Error": err.Error(),
+		if len(destinationFile) < 1 || len(requestid) < 1 {
+			r.JSON(406, map[string]string{
+				"Error": "destination file (1), requestid (2)  must be specified: [(1):" + destinationFile + " (2):" + requestid + "]",
 			})
-		}
-		url := requestedFile.FileURL
-		fbucket := requestedFile.FileBucket
-		fkey := requestedFile.FileKey
-		// url := "https://s3-us-west-2.amazonaws.com/garrysbucket/rics.txt"
-		// s3Key := os.Getenv("S3KEY")
-		// s3SecretKey := os.Getenv("S3SECRET")
-
-		// result, err := s3util.Open(url, nil)
-
-		if destinationFile == "" {
-			rr, by, err := gets3files(url)
-			if err != nil || strings.Contains(string(by[:]), ">The specified key does not exist.<") {
-				r.JSON(402, map[string]string{
-					"error": "Failed to get object",
-				})
-			}
-			// Copy the s3 file contents to the http response writer]
-			if _, err := io.Copy(w, rr); err != nil {
-				r.JSON(403, map[string]string{
-					"error": "Failed to download object",
-				})
-			}
 		} else {
-			filewriter, err := os.Create(destinationFile)
-			defer filewriter.Close()
+			requestedFile, err := fetchRequestedFile(db, requestid)
 			if err != nil {
-				r.JSON(404, map[string]error{
-					"File error": err,
+				r.JSON(401, map[string]string{
+					" DB Error": err.Error(),
+				})
+			}
+			url := requestedFile.FileURL
+			fbucket := requestedFile.FileBucket
+			fkey := requestedFile.FileKey
+			if len(fbucket) < 1 || len(fkey) < 1 {
+				r.JSON(408, map[string]string{
+					"Error": "source bucket (1) and key (2) must be specified in requestfile document [(1):" + fbucket + " (2):" + fkey + "]",
 				})
 			} else {
-				var s3sess = session.New(aws.NewConfig().WithCredentials(credentials.AnonymousCredentials).WithRegion("us-west-2"))
-				downloader := s3manager.NewDownloader(s3sess)
-				numBytes, err := downloader.Download(filewriter, &s3.GetObjectInput{
-					Bucket: &fbucket,
-					Key:    &fkey,
-				})
-				//if _, err := io.Copy(filewriter, rr); err != nil {
+
+				filewriter, err := os.Create(destinationFile)
+				defer filewriter.Close()
 				if err != nil {
-					fmt.Printf("%s\n", err)
-					r.JSON(405, map[string]string{
-						"error": "Failed to download to file",
+					r.JSON(404, map[string]error{
+						"File error": err,
 					})
 				} else {
-
-					r.JSON(200, map[string]string{
-						"done": url + " downloaded to " + destinationFile + " [" + strconv.FormatInt(numBytes, 10) + "]",
+					var s3sess = session.New(aws.NewConfig().WithCredentials(credentials.AnonymousCredentials).WithRegion("us-west-2"))
+					downloader := s3manager.NewDownloader(s3sess)
+					numBytes, err := downloader.Download(filewriter, &s3.GetObjectInput{
+						Bucket: &fbucket,
+						Key:    &fkey,
 					})
+					//if _, err := io.Copy(filewriter, rr); err != nil {
+					if err != nil {
+						r.JSON(405, map[string]string{
+							"error": "Failed to download to file",
+						})
+					} else {
+
+						r.JSON(200, map[string]string{
+							"done": url + " downloaded to " + destinationFile + " [" + strconv.FormatInt(numBytes, 10) + "] bytes",
+						})
+					}
 				}
 			}
 

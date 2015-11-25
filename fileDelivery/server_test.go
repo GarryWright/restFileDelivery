@@ -13,6 +13,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"strings"
 )
 
 /*
@@ -237,36 +238,14 @@ var _ = Describe("Server", func() {
 		})
 	})
 
-	Describe("GET /file?requestid=0", func() {
+	Describe("GET /file?requestid=0&destination=copiedfile.txt", func() {
 
-		Context("with valid token", func() {
-
-			BeforeEach(func() {
-				collection := session.DB(dbName).C("requestedFiles")
-				collection.Insert(gory.Build("requestedFile0"))
-				request, _ = http.NewRequest("GET", "/file?requestid=0", nil)
-
-			})
-
-			Context("when a requestedFiles exists with request id 0", func() {
-				It("returns a status code of 200", func() {
-					server.ServeHTTP(recorder, request)
-					Expect(recorder.Code).To(Equal(200))
-				})
-
-				It("returns a the s3 file contents body", func() {
-					server.ServeHTTP(recorder, request)
-					Expect(recorder.Body.String()[:21]).To(Equal("IBM.N 1/1/1960 12.375"))
-				})
-			})
-
-		})
-		Context("with invalid token", func() {
+		Context("with invalid request id", func() {
 
 			BeforeEach(func() {
 				collection := session.DB(dbName).C("requestedFiles")
 				collection.Insert(gory.Build("requestedFile1"))
-				request, _ = http.NewRequest("GET", "/file?requestid=0", nil)
+				request, _ = http.NewRequest("GET", "/file?requestid=0&destination=copiedfile.txt", nil)
 
 			})
 
@@ -284,14 +263,14 @@ var _ = Describe("Server", func() {
 			BeforeEach(func() {
 				collection := session.DB(dbName).C("requestedFiles")
 				collection.Insert(gory.Build("requestedFile1"))
-				request, _ = http.NewRequest("GET", "/file?requestid=1", nil)
+				request, _ = http.NewRequest("GET", "/file?requestid=1&destination=copiedfile.txt", nil)
 
 			})
 
 			Context("when a s3 file does not exits", func() {
 				It("returns a status code of 402", func() {
 					server.ServeHTTP(recorder, request)
-					Expect(recorder.Code).To(Equal(402))
+					Expect(recorder.Code).To(Equal(405))
 				})
 
 			})
@@ -314,6 +293,7 @@ var _ = Describe("Server", func() {
 				It("returns a status code of 200", func() {
 					server.ServeHTTP(recorder, request)
 					Expect(recorder.Code).To(Equal(200))
+					Expect(strings.Contains(recorder.Body.String(), "[132] bytes")).To(BeTrue())
 				})
 
 				It("returns a the s3 file contents into a file", func() {
@@ -329,6 +309,82 @@ var _ = Describe("Server", func() {
 					}
 					Expect(lines[0]).To(Equal("IBM.N 1/1/1960 12.375"))
 				})
+			})
+
+		})
+		Context("with invalid parms ", func() {
+
+			BeforeEach(func() {
+				collection := session.DB(dbName).C("requestedFiles")
+				collection.Insert(gory.Build("requestedFile0"))
+				request, _ = http.NewRequest("GET", "/file?requestid=0", nil)
+
+			})
+
+			Context("when destination is missing", func() {
+				It("returns a status code of 406", func() {
+					server.ServeHTTP(recorder, request)
+					Expect(recorder.Code).To(Equal(406))
+					Expect(strings.Contains(recorder.Body.String(), "[(1): (2):")).To(BeTrue())
+				})
+
+			})
+
+		})
+		Context("with invalid parms ", func() {
+
+			BeforeEach(func() {
+				collection := session.DB(dbName).C("requestedFiles")
+				collection.Insert(gory.Build("requestedFile0"))
+				request, _ = http.NewRequest("GET", "/file?destination=copiedfile.txt", nil)
+
+			})
+
+			Context("when requestid is missing", func() {
+				It("returns a status code of 406", func() {
+					server.ServeHTTP(recorder, request)
+					Expect(recorder.Code).To(Equal(406))
+					Expect(strings.Contains(recorder.Body.String(), "(2):]")).To(BeTrue())
+				})
+
+			})
+
+		})
+		Context("with invalid requestfile document ", func() {
+
+			BeforeEach(func() {
+				collection := session.DB(dbName).C("requestedFiles")
+				collection.Insert(gory.Build("requestedFile3"))
+				request, _ = http.NewRequest("GET", "/file?requestid=1&destination=copiedfile.txt", nil)
+
+			})
+
+			Context("when s3 key is missing", func() {
+				It("returns a status code of 408", func() {
+					server.ServeHTTP(recorder, request)
+					Expect(recorder.Code).To(Equal(408))
+					Expect(strings.Contains(recorder.Body.String(), "(2):]")).To(BeTrue())
+				})
+
+			})
+
+		})
+		Context("with invalid requestfile document ", func() {
+
+			BeforeEach(func() {
+				collection := session.DB(dbName).C("requestedFiles")
+				collection.Insert(gory.Build("requestedFile2"))
+				request, _ = http.NewRequest("GET", "/file?requestid=1&destination=copiedfile.txt", nil)
+
+			})
+
+			Context("when s3 bucket is missing", func() {
+				It("returns a status code of 408", func() {
+					server.ServeHTTP(recorder, request)
+					Expect(recorder.Code).To(Equal(408))
+					Expect(strings.Contains(recorder.Body.String(), "(1): (2)")).To(BeTrue())
+				})
+
 			})
 
 		})

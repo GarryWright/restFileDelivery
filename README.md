@@ -48,15 +48,11 @@ curl http://localhost:3000/requestedFiles
   },
   {
     "clientid": "HSBC",
-    "requestid": "00004",
+    "requestid": "00006",
     "ricdays": 21,
-    "fileurl": "http://s3-us-west-2.amazonaws.com/garrysbucket/rics2.txt"
-  },
-  {
-    "clientid": "HSBC",
-    "requestid": "00005",
-    "ricdays": 21,
-    "fileurl": "http://s3-us-west-2.amazonaws.com/garrysbucket/rics2.txt"
+    "fileurl": "http://s3-us-west-2.amazonaws.com/garrysbucket/rics2.txt",
+    "filebucket": "garrysbucket",
+    "filekey": "rics.txt"
   }
 ```
 
@@ -76,6 +72,6 @@ localhost:3000/file?requestid=00002&destination=copiedfile.txt
 returns the contents of the s3 file found in the requestedFile document to the file specified
 ```
 {
-  "done": "https://s3-us-west-2.amazonaws.com/garrysbucket/rics.txt downloaded to xxx.txt"
+  "done": "http://s3-us-west-2.amazonaws.com/garrysbucket/rics.txt downloaded to xxx.txt [132] bytes"
 }
 ```
