@@ -27,10 +27,11 @@ script:
   - go get github.com/onsi/gomega
   - go get github.com/onsi/ginkgo
   - go get labix.org/v2/mgo
-  - go install github.com/GarryWright/restFileDelivery/fileDelivery
-  - go test -coverprofile=coverage.txt -covermode count github.com/GarryWright/restFileDelivery/fileDelivery
+  - go test -coverprofile=coverage.txt -covermode count ./...
   - gocover-cobertura < coverage.txt > coverage.xml
 
 after_script:
+  - pwd
+  - ls  
   - mv $PWD/fileDelivery/junit.xml $PWD/shippable/testresults/
   - mv $PWD/coverage.xml $PWD/shippable/codecoverage/
