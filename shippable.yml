@@ -27,7 +27,7 @@ script:
   - go get github.com/onsi/gomega
   - go get github.com/onsi/ginkgo
   - go get labix.org/v2/mgo
-  - go install restFileDelivery/fileDelivery
+  - go install src/github.com/GarryWright/restFileDelivery/fileDelivery
   - go test -coverprofile=coverage.txt -covermode count src/github.com/GarryWright/restFileDelivery/fileDelivery
   - gocover-cobertura < coverage.txt > coverage.xml
 
