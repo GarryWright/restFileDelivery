@@ -27,11 +27,9 @@ script:
   - go get github.com/onsi/gomega
   - go get github.com/onsi/ginkgo
   - go get labix.org/v2/mgo
-  - go get
-  - cd fileDelivery
-  - go test -coverprofile=coverage.txt -covermode count 
+  - go env
+  - go test -v ./... -coverprofile=coverage.txt -covermode count 
   - gocover-cobertura < coverage.txt > coverage.xml
-  - cd -
 
 after_script:
   - pwd
