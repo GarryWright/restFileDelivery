@@ -28,13 +28,16 @@ script:
   - go get github.com/onsi/ginkgo
   - go get labix.org/v2/mgo
   - go get github.com/modocache/gory
+  - go get github.com/jstemmer/go-junit-report
   - go env
   - go get github.com/GarryWright/restFileDelivery/fileDelivery
   - go build
-  - go test -v  -coverprofile=coverage.txt -covermode count github.com/GarryWright/restFileDelivery/fileDelivery
+  - go test -v  -coverprofile=coverage.txt -covermode count github.com/GarryWright/restFileDelivery/fileDelivery | go-junit-report > junit.xml
   - gocover-cobertura < coverage.txt > coverage.xml
+  - mv $PWD/coverage.xml $PWD/shippable/codecoverage/
+  - mv $PWD/junit.xml $PWD/shippable/testresults/
 
 after_script:
   - pwd
-  - ls  
-  - mv $PWD/coverage.xml $PWD/shippable/codecoverage/
+  - cat coverage.xml 
+  - cat junit.xml 
