@@ -27,6 +27,7 @@ script:
   - go get github.com/onsi/gomega
   - go get github.com/onsi/ginkgo
   - go get labix.org/v2/mgo
+  - go get github.com/modocache/gory
   - go env
   - go get github.com/GarryWright/restFileDelivery/fileDelivery
   - go build
