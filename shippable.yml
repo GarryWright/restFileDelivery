@@ -30,7 +30,7 @@ script:
   - go env
   - go get github.com/GarryWright/restFileDelivery/fileDelivery
   - go build
-  - go test -v  -coverprofile=coverage.txt -covermode count ./...
+  - go test -v  -coverprofile=coverage.txt -covermode count github.com/GarryWright/restFileDelivery/fileDelivery
   - gocover-cobertura < coverage.txt > coverage.xml
 
 after_script:
