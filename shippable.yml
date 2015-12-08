@@ -28,6 +28,7 @@ script:
   - go get github.com/onsi/ginkgo
   - go get labix.org/v2/mgo
   - go env
+  - export GOPATH="/home/shippable/workspace"
   - go build
   - go test -v  -coverprofile=coverage.txt -covermode count ./...
   - gocover-cobertura < coverage.txt > coverage.xml
