@@ -1,7 +1,7 @@
 package fileDelivery_test
 
 import (
-	. "github.com/GarryWright/restFileDelivery/fileDelivery"
+	. "fileDelivery"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
