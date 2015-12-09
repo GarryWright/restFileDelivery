@@ -46,5 +46,5 @@ script:
 
 after_script:
   - pwd
-  - cat $PWD/fileDelivery/shippable/codecoverage/coverage.xml 
-  - cat $PWD/fileDelivery/shippable/testresults/junit.xml 
+  - cat shippable/codecoverage/coverage.xml 
+  - cat shippable/testresults/junit.xml 
