@@ -39,11 +39,10 @@ script:
   - gocover-cobertura < coverage.txt > coverage.xml
   - cat coverage.xml
   - cp coverage.xml shippable/codecoverage/
-  - cd fileDelivery
+  - which gocover-cobertura
   - ginkgo -r --randomizeAllSpecs -cover
-  - cat junit.xml
-  - cp junit.xml ../fshippable/testresults/
-  - cd ..
+  - cat fileDelivery/junit.xml
+  - cp fileDelivery/junit.xml fshippable/testresults/
 
 after_script:
   - pwd
