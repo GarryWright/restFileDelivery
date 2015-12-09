@@ -37,11 +37,12 @@ script:
   - go build
   - go test -v  -coverprofile=coverage.txt -covermode count github.com/GarryWright/restFileDelivery/fileDelivery 
   - gocover-cobertura < coverage.txt > coverage.xml
-  - mv $PWD/coverage.xml $PWD/shippable/codecoverage/
+  - cat coverage.xml
+  - cp coverage.xml shippable/codecoverage/
   - cd fileDelivery
-  - $GOPATH/bin/ginkgo -r --randomizeAllSpecs
+  - ginkgo -r --randomizeAllSpecs -cover
   - cat junit.xml
-  - mv $PWD/junit.xml $PWD/../fshippable/testresults/
+  - cp junit.xml ../fshippable/testresults/
   - cd ..
 
 after_script:
