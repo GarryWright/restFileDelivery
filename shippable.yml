@@ -7,6 +7,9 @@ go:
 services:
   - mongodb
 
+env:
+  - XUNIT_FILE=shippable/testresults/result.xml
+
 before_install:
   - sudo apt-get update 
   
@@ -16,8 +19,8 @@ install:
 
 # Make folders for the reports
 before_script:
-  - mkdir -p fileDelivery/shippable/testresults
-  - mkdir -p fileDelivery/shippable/codecoverage
+  - mkdir -p shippable/testresults
+  - mkdir -p shippable/codecoverage
 
 script:
   - pwd
@@ -32,10 +35,14 @@ script:
   - go env
   - go get github.com/GarryWright/restFileDelivery/fileDelivery
   - go build
-  - go test -v  -coverprofile=coverage.txt -covermode count github.com/GarryWright/restFileDelivery/fileDelivery | go-junit-report > junit.xml
+  - go test -v  -coverprofile=coverage.txt -covermode count github.com/GarryWright/restFileDelivery/fileDelivery 
   - gocover-cobertura < coverage.txt > coverage.xml
-  - mv $PWD/coverage.xml $PWD/fileDelivery/shippable/codecoverage/
-  - mv $PWD/junit.xml $PWD/fileDelivery/shippable/testresults/
+  - mv $PWD/coverage.xml $PWD/shippable/codecoverage/
+  - cd fileDelivery
+  - $GOPATH/bin/ginkgo -r --randomizeAllSpecs
+  - cat junit.xml
+  - mv $PWD/junit.xml $PWD/../fshippable/testresults/
+  - cd ..
 
 after_script:
   - pwd

@@ -7,13 +7,15 @@ import (
 
 	"fmt"
 	"github.com/modocache/gory"
+	"github.com/onsi/ginkgo/reporters"
 	"testing"
 )
 
 func TestRestFileDelivery(t *testing.T) {
 	defineFactories()
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "RestFileDelivery Suite")
+	junitReporter := reporters.NewJUnitReporter("junit.xml")
+	RunSpecsWithDefaultAndCustomReporters(t, "RestFileDelivery Suite", []Reporter{junitReporter})
 }
 
 func defineFactories() {
