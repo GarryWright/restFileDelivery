@@ -37,8 +37,8 @@ script:
   - go build
   - ls /home/shippable/workspace/bin/
   - go test -v  -coverprofile=coverage.txt -covermode count github.com/GarryWright/restFileDelivery/fileDelivery 
-  - gocover-cobertura < coverage.txt
-  - gocover-cobertura < coverage.txt > coverage.xml
+  - /home/shippable/workspace/bin/gocover-cobertura < coverage.txt
+  - /home/shippable/workspace/bin/gocover-cobertura < coverage.txt > coverage.xml
   - cat coverage.txt
   - cat coverage.xml
   - cp coverage.xml shippable/codecoverage/
