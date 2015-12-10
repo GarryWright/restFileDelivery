@@ -35,12 +35,14 @@ script:
   - go env
   - go get github.com/GarryWright/restFileDelivery/fileDelivery
   - go build
+  - ls /home/shippable/workspace/bin/
   - go test -v  -coverprofile=coverage.txt -covermode count github.com/GarryWright/restFileDelivery/fileDelivery 
   - gocover-cobertura < coverage.txt > coverage.xml
+  - cat coverage.txt
   - cat coverage.xml
   - cp coverage.xml shippable/codecoverage/
   - which gocover-cobertura
-  - ginkgo -r --randomizeAllSpecs -cover
+  - /home/shippable/workspace/bin/ginkgo -r --randomizeAllSpecs -cover
   - cat fileDelivery/junit.xml
   - cp fileDelivery/junit.xml fshippable/testresults/
 
