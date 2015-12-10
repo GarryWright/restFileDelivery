@@ -31,12 +31,13 @@ script:
   - go get github.com/onsi/ginkgo/ginkgo
   - go get labix.org/v2/mgo
   - go get github.com/modocache/gory
-  - go get github.com/jstemmer/go-junit-report
+  # - go get github.com/jstemmer/go-junit-report
   - go env
   - go get github.com/GarryWright/restFileDelivery/fileDelivery
   - go build
   - ls /home/shippable/workspace/bin/
   - go test -v  -coverprofile=coverage.txt -covermode count github.com/GarryWright/restFileDelivery/fileDelivery 
+  - gocover-cobertura < coverage.txt
   - gocover-cobertura < coverage.txt > coverage.xml
   - cat coverage.txt
   - cat coverage.xml
@@ -44,7 +45,7 @@ script:
   - which gocover-cobertura
   - /home/shippable/workspace/bin/ginkgo -r --randomizeAllSpecs -cover
   - cat fileDelivery/junit.xml
-  - cp fileDelivery/junit.xml fshippable/testresults/
+  - cp fileDelivery/junit.xml shippable/testresults/
 
 after_script:
   - pwd
