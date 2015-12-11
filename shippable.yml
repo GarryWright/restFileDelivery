@@ -38,9 +38,10 @@ script:
   - ls /home/shippable/workspace/bin/
   - go test -v  -coverprofile=coverage.txt -covermode count github.com/GarryWright/restFileDelivery/fileDelivery 
   - /home/shippable/workspace/bin/gocover-cobertura < coverage.txt
-  - /home/shippable/workspace/bin/gocover-cobertura < coverage.txt > coverage.xml
+  - /home/shippable/workspace/bin/gocover-cobertura < coverage.txt > coverage2.xml
   - cat coverage.txt
-  - cat coverage.xml
+  - cat coverage2.xml
+  - xsltproc coverfix.xsl coverage2.xml > coverage.xml
   - cp coverage.xml shippable/codecoverage/
   - which gocover-cobertura
   - /home/shippable/workspace/bin/ginkgo -r --randomizeAllSpecs -cover
