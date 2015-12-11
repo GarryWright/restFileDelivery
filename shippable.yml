@@ -26,6 +26,7 @@ script:
   - pwd
   - export PATH=$PATH:$PWD/bin
   - sudo apt-get install bzr
+  - sudo apt-get install xsltproc
   - go get github.com/t-yuki/gocover-cobertura
   - go get github.com/onsi/gomega
   - go get github.com/onsi/ginkgo/ginkgo
