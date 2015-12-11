@@ -6,9 +6,7 @@
     exclude-result-prefixes="xalan">
     <xsl:output method="xml" omit-xml-declaration="yes" indent="yes"/>
     <xsl:template match="/*">
-        <xsl:for-each select="*">
-            <xsl:call-template name="getdesc"/>
-        </xsl:for-each>
+            <xsl:call-template name="getdesc"/> 
     </xsl:template>
     <xsl:template name="getdesc">
         <xsl:variable name="etag" select="name()"/>
