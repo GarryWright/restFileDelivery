@@ -4,9 +4,10 @@
     xmlns:fn="http://www.w3.org/2005/02/xpath-functions"
     xmlns:xdt="http://www.w3.org/2005/02/xpath-datatypes" xmlns:xalan="http://xml.apache.org/xalan"
     exclude-result-prefixes="xalan">
-    <xsl:output method="xml" omit-xml-declaration="yes" indent="yes"/>
+    <xsl:output method="xml" omit-xml-declaration="no" indent="yes" doctype-public="coverage"
+        doctype-system="http://cobertura.sourceforge.net/xml/coverage-03.dtd"/>
     <xsl:template match="/*">
-            <xsl:call-template name="getdesc"/> 
+        <xsl:call-template name="getdesc"/>
     </xsl:template>
     <xsl:template name="getdesc">
         <xsl:variable name="etag" select="name()"/>
@@ -15,7 +16,8 @@
                 <xsl:variable name="tag" select="name()"/>
                 <xsl:attribute name="{$tag}">
                     <xsl:choose>
-                        <xsl:when test="$tag='line-rate' and count(parent::*/descendant-or-self::*[@hits]) > 0">
+                        <xsl:when
+                            test="$tag='line-rate' and count(parent::*/descendant-or-self::*[@hits]) > 0">
                             <xsl:value-of
                                 select="format-number(count(parent::*/descendant-or-self::*[@hits!='0']) div count(parent::*/descendant-or-self::*[@hits]) * 100,'###.##')"
                             />
@@ -23,14 +25,14 @@
                         <xsl:otherwise>
                             <xsl:value-of select="."/>
                         </xsl:otherwise>
-                    </xsl:choose>                
-                </xsl:attribute>         
+                    </xsl:choose>
+                </xsl:attribute>
             </xsl:for-each>
             <xsl:value-of select="text()"/>
             <xsl:for-each select="*">
                 <xsl:call-template name="getdesc"/>
             </xsl:for-each>
-            
+
         </xsl:element>
     </xsl:template>
 
