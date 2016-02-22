@@ -1,0 +1,6 @@
+application {
+    name = "restfiledelivery"
+    type = "go"
+
+    dependency { source = "github.com/GarryWright/restFileDelivery/depend/mongo" }
+}
