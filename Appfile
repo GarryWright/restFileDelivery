@@ -2,5 +2,7 @@ application {
     name = "restfiledelivery"
     type = "go"
 
-    dependency { source = "github.com/GarryWright/restFileDelivery/depend/mongo" }
+    /*dependency { source = "github.com/GarryWright/restFileDelivery/depend/mongo" }*/
+    dependency { source = "github.com/hashicorp/otto/examples/mongodb" }
+
 }

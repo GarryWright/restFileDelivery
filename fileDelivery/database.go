@@ -4,6 +4,7 @@ import (
 	"github.com/go-martini/martini"
 	"gopkg.in/mgo.v2"
 	"os"
+	"fmt"
 )
 
 /*
@@ -29,8 +30,9 @@ func NewSession(name string) *DatabaseSession {
 	session, err := mgo.Dial(db_server_seed)
 	if err != nil {
 		panic(err)
+	} else {
+		fmt.Printf("Mongo session established with %s %s \n",db_server_seed,name)
 	}
-
 	addIndexToRequestedFiles(session.DB(name))
 	return &DatabaseSession{session, name}
 }
