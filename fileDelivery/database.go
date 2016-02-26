@@ -25,6 +25,8 @@ func NewSession(name string) *DatabaseSession {
 	if db_server_seed == "" {
 		db_server_seed = "mongodb://127.0.0.1:27017"
 	}
+	
+	fmt.Printf("Dialing Mongo session at %s \n",db_server_seed)
 
 	// session, err := mgo.Dial("mongodb://root:root@ds057224.mongolab.com:57224/requestfiles")
 	session, err := mgo.Dial(db_server_seed)
